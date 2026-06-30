@@ -19,46 +19,51 @@ in
     settings = [{
       layer    = "top";
       position = "top";
-      height   = 28;
-      spacing  = 4;
+      height   = 26;
+      spacing  = 2;
 
       modules-left   = [];
       modules-center = [ "clock" ];
-      modules-right  = [ "tray" "network" "bluetooth" "pulseaudio" "battery" "custom/power" ];
+      modules-right  = [ "network" "bluetooth" "pulseaudio" "battery" "tray" "custom/power" ];
 
       "clock" = {
         format         = "{:%H:%M  %a %d.%m.%Y}";
         tooltip-format = "<big>{:%B %Y}</big>\n<tt><small>{calendar}</small></tt>";
       };
 
+      # Kein Netzwerkname — nur Signal-Icon; SSID und IP stehen im Tooltip.
+      # format-icons: Index 0 = kein Signal … 4 = volles Signal (nach Signalstärke-%).
       "network" = {
-        format-wifi         = "  {essid}";
-        format-ethernet     = "󰈀 LAN";
+        format-wifi         = "{icon}";
+        format-ethernet     = "󰈀";
         format-disconnected = "󰤭";
-        tooltip-format-wifi = "{essid} — {signalStrength}%\n{ipaddr}";
+        format-icons        = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
+        tooltip-format-wifi = "{essid}  {signalStrength}%\n{ipaddr}";
         on-click            = "nm-connection-editor";
       };
 
       "bluetooth" = {
-        format          = "󰂯";
-        format-disabled = "󰂲";
-        format-connected = "󰂱  {device_alias}";
-        tooltip-format  = "{controller_alias}\n{num_connections} verbunden";
-        on-click        = "blueman-manager";
+        format           = "󰂯";
+        format-disabled  = "󰂲";
+        format-connected = "󰂱";
+        tooltip-format   = "{controller_alias}\n{num_connections} verbunden";
+        on-click         = "blueman-manager";
       };
 
+      # {icon} wechselt mit Lautstärke (leise → laut) — erkennbar als Ton-Modul.
       "pulseaudio" = {
-        format       = "{icon}  {volume}%";
+        format       = "{icon} {volume}%";
         format-muted = "󰝟";
-        format-icons = { default = [ "" "" "" ]; };
+        format-icons = { default = [ "󰕿" "󰖀" "󰕾" ]; };
         on-click     = "pamixer -t";
         scroll-step  = 5;
       };
 
       "battery" = {
-        format          = "{icon}  {capacity}%";
-        format-charging = "  {capacity}%";
-        format-icons    = [ "" "" "" "" "" ];
+        format          = "{icon} {capacity}%";
+        format-charging = "󰂄 {capacity}%";
+        # 10 Nerd-Font-Batterie-Icons für feingranulare Ladeanzeige.
+        format-icons    = [ "󰂃" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰁹" ];
         states = {
           warning  = 30;
           critical = 15;
@@ -80,7 +85,7 @@ in
       * {
         border:        none;
         border-radius: 0;
-        font-size:     13px;
+        font-size:     12px;
         min-height:    0;
       }
 
@@ -92,6 +97,7 @@ in
         border-bottom:    1px solid #${c.base02};
       }
 
+      /* Alle Module einheitlich in der Hauptfarbe — kein buntes Durcheinander. */
       #clock,
       #network,
       #bluetooth,
@@ -99,51 +105,24 @@ in
       #battery,
       #tray,
       #custom-power {
-        padding: 0 10px;
+        padding: 0 8px;
         color:   #${c.base05};
       }
 
-      #network {
-        color: #${c.base0D};
-      }
+      /* Deaktiviert/stummgeschaltet: gedimmt statt unsichtbar. */
+      #pulseaudio.muted   { color: #${c.base03}; }
+      #bluetooth.disabled { color: #${c.base03}; }
 
-      #bluetooth {
-        color: #${c.base0C};
-      }
-
-      #bluetooth.disabled {
-        color: #${c.base03};
-      }
-
-      #battery {
-        color: #${c.base0B};
-      }
-
-      #battery.warning {
-        color: #${c.base0A};
-      }
-
-      #battery.critical {
-        color:       #${c.base08};
-        font-weight: bold;
-      }
-
-      #pulseaudio {
-        color: #${c.base0E};
-      }
-
-      #pulseaudio.muted {
-        color: #${c.base03};
-      }
+      #battery.warning    { color: #${c.base0A}; }
+      #battery.critical   { color: #${c.base08}; font-weight: bold; }
 
       #custom-power {
-        color:       #${c.base08};
-        font-size:   15px;
-        padding:     0 12px;
+        font-size: 14px;
+        padding:   0 10px;
       }
 
       #custom-power:hover {
-        color: #${c.base00};
+        color:            #${c.base00};
         background-color: #${c.base08};
       }
     '';
