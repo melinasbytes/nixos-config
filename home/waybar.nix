@@ -24,7 +24,7 @@ in
 
       modules-left   = [];
       modules-center = [ "clock" ];
-      modules-right  = [ "network" "bluetooth" "pulseaudio" "battery" "tray" "custom/power" ];
+      modules-right  = [ "network" "bluetooth" "pulseaudio" "battery" "custom/power" "tray" ];
 
       "clock" = {
         format         = "{:%H:%M  %a %d.%m.%Y}";
